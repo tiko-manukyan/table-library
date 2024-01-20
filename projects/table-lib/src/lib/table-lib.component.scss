@@ -1,0 +1,89 @@
+.table_content {
+  background-color: whitesmoke;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+  padding: 20px;
+  height: auto;
+  .table_toolbar {
+    justify-content: space-between;
+    display: flex;
+    padding: 10px;
+  }
+  .table_toolbar__input {
+    position: relative;
+    font-size: 14px;
+  }
+  .table_data__search {
+    border: 1px solid gray;
+    border-radius: 6px;
+    position: relative;
+    width: 180px;
+    margin: 8px;
+    line-height: 27px;
+    &:focus {
+      border: 1px solid deepskyblue;
+      outline: none;
+    }
+  }
+  label {
+    position: absolute;
+    top: 0.2ex;
+    z-index: 1;
+    left: 2em;
+    background-color: white;
+  }
+}
+
+
+
+.table__data {
+  background-color: white;
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  font: normal 13px Arial, sans-serif;
+  thead th {
+    color: gray;
+    padding: 10px;
+    text-align: left;
+    text-shadow: 1px 1px 1px #fff;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  tbody td {
+    color: #333;
+    padding: 10px;
+    text-shadow: 1px 1px 1px #fff;
+  }
+  tr {
+    border: solid 1px #9fa4b3;
+  }
+}
+
+table tbody tr:hover {
+  background-color: deepskyblue;
+  cursor: pointer;
+}
+
+.pagination__panel {
+  width: 50px;
+  display: flex;
+  justify-content: space-between;
+  margin: 10px;
+  span:nth-child(2) {
+    background: deepskyblue;
+    text-align: center;
+    font-size: 13px;
+    color: white;
+  }
+  > span {
+    text-align: center;
+    font-size: 10px;
+    width: 15px;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
