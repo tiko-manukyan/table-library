@@ -1,0 +1,43 @@
+<ng-container *ngIf="loading.isLoading$ | async">
+  {{ messagePending }}
+</ng-container>
+<div *ngIf="data.length && !(loading.isLoading$ | async)" class="table_content">
+  <div *ngIf="showTool; else noToolbar" class="table_toolbar">
+    <span>Теги: {{ data.length }}</span>
+    <div class="table_toolbar__input">
+      <label>Поиск</label>
+      <input class="table_data__search" type="text">
+    </div>
+  </div>
+  <ng-template #noToolbar>
+    <h3>{{ header }}</h3>
+  </ng-template>
+  <div>
+    <table class="table__data">
+      <thead>
+      <tr>
+        <th *ngFor="let col of columns"
+            (click)="sortBy(col.header)"
+        >
+          {{ col.header | titlecase }}
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let user of data">
+        <td>
+          <input type="checkbox">
+          {{ user.name }}
+        </td>
+        <td>{{ user.type }}</td>
+        <td>{{ user.author }}</td>
+      </tr>
+      </tbody>
+    </table>
+    <div class="pagination__panel">
+      <span (click)="previousPage()"><<</span>
+      <span>{{ currentPage }}</span>
+      <span (click)="nextPage()">>></span>
+    </div>
+  </div>
+</div>
