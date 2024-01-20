@@ -2,14 +2,17 @@ import { Component, Input, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TableLibService } from "./table-lib.service";
 import { TableLoadingService } from "./table-loading.service";
-import {AsyncPipe, TitleCasePipe} from "@angular/common";
+import { AsyncPipe, CommonModule, TitleCasePipe } from "@angular/common";
+import { HttpClientModule } from "@angular/common/http";
 @Component({
   selector: 'lib-table-lib',
   standalone: true,
   templateUrl: './table-lib.component.html',
   imports: [
     TitleCasePipe,
-    AsyncPipe
+    AsyncPipe,
+    CommonModule,
+    HttpClientModule
   ],
   styleUrl: './table-lib.component.scss'
 })
