@@ -8,11 +8,7 @@ export class TableLibService {
 
   constructor(private http: HttpClient) { }
 
-  public getTableData(body: {} = {}) {
-    return this.http
-      .post(
-        'https://mytable.free.mockoapp.net/all',
-        body
-      )
+  public getTableData(url: string, body: {} = {}) {
+    return this.http.post(url, body)
   }
 }

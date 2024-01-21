@@ -19,15 +19,16 @@ import { HttpClientModule } from "@angular/common/http";
 
 export class TableLibComponent implements OnInit {
 
+  @Input() URL!: string
   @Input() autoLoading = true;
   @Input() messageNotFound = '';
   @Input() messagePending = '';
   @Input() header: string = '';
   @Input() columns:  any = []
   public data: any = [];
-  private params: any;
   public showTool = true;
   public currentPage = 1;
+  public limit = 20;
 
 
   constructor(
@@ -39,9 +40,11 @@ export class TableLibComponent implements OnInit {
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
+      this.currentPage = isNaN(+params['page']) ? 1 : +params['page'];
+      this.limit = isNaN(+params['limit']) ? 20 : +params['limit'];
       this.loading.setLoading(true);
-      this.tableLibService.getTableData()
-        .subscribe((data: any) => {
+      this.tableLibService.getTableData(this.URL, params)
+        .subscribe((data) => {
           this.loading.setLoading(false);
           this.data = Object.values(data)[0]
         })
@@ -51,7 +54,7 @@ export class TableLibComponent implements OnInit {
   onNavigate(column:  any) {
     this.router.navigate([],
       {
-        queryParams: column,
+        queryParams: {...column, page: this.currentPage, limit:this.limit},
         queryParamsHandling: "merge"
       })
   }
