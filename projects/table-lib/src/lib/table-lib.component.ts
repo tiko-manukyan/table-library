@@ -23,7 +23,7 @@ import { ColumnPropertiesInterface, TableToolbar } from "./models";
 
 export class TableLibComponent implements OnInit {
 
-  @Input() readonly token = 'WriteYourTokenHere';
+  @Input() token = 'WriteYourTokenHere';
   @Input() URL = '';
   @Input() autoLoading = true;
   @Input() header = '';
@@ -36,8 +36,6 @@ export class TableLibComponent implements OnInit {
   public limit =  20;
   public limitOptions = [20, 50, 100];
   private params: Params = [];
-
-
   constructor(
     private tableLibService: TableLibService,
     public loading: TableLoadingService,
