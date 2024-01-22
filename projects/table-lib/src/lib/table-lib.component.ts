@@ -4,6 +4,8 @@ import { TableLibService } from "./table-lib.service";
 import { TableLoadingService } from "./table-loading.service";
 import { AsyncPipe, CommonModule, TitleCasePipe } from "@angular/common";
 import { HttpClientModule } from "@angular/common/http";
+import { FormsModule } from "@angular/forms";
+import { TableToolbar } from "./models";
 @Component({
   selector: 'lib-table-lib',
   standalone: true,
@@ -12,7 +14,8 @@ import { HttpClientModule } from "@angular/common/http";
     TitleCasePipe,
     AsyncPipe,
     CommonModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   styleUrl: './table-lib.component.scss'
 })
@@ -25,10 +28,13 @@ export class TableLibComponent implements OnInit {
   @Input() messagePending = '';
   @Input() header: string = '';
   @Input() columns:  any = []
+  @Input() tableToolbar:TableToolbar = {}
   public data: any = [];
-  public showTool = true;
   public currentPage = 1;
-  public limit = 20;
+  public limit =  20;
+  public  limitOptions = [20, 50, 100]
+
+  private params: any = [];
 
 
   constructor(
@@ -40,6 +46,7 @@ export class TableLibComponent implements OnInit {
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
+      this.params = params
       this.currentPage = isNaN(+params['page']) ? 1 : +params['page'];
       this.limit = isNaN(+params['limit']) ? 20 : +params['limit'];
       this.loading.setLoading(true);
@@ -54,15 +61,18 @@ export class TableLibComponent implements OnInit {
   onNavigate(column:  any) {
     this.router.navigate([],
       {
-        queryParams: {...column, page: this.currentPage, limit:this.limit},
+        queryParams: {...column, page: this.currentPage},
         queryParamsHandling: "merge"
       })
   }
 
-  public sortBy(column: string | undefined) {
+  public sortBy(column: any) {
+    if (!column.sorting) {
+      return;
+    }
     const params = {
-      order_by: column,
-      order_type: 'desc'
+      order_by: column.header,
+      order_type: this.params.order_type === 'desc' ? 'asc' : 'desc'
     }
     this.onNavigate(params);
   }
@@ -81,6 +91,16 @@ export class TableLibComponent implements OnInit {
     const params = {page: this.currentPage}
     this.onNavigate(params)
   }
+
+  public isEmptyObject(obj: {}): boolean {
+    return (obj && (Object.keys(obj).length === 0));
+  }
+
+  public setPageLimit(limit: number) {
+    const params = { limit: limit};
+    this.onNavigate(params)
+  }
+
 }
 
 

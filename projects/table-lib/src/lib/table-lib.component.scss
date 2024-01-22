@@ -6,9 +6,15 @@
   padding: 20px;
   height: auto;
   .table_toolbar {
-    justify-content: space-between;
     display: flex;
-    padding: 10px;
+    justify-content: space-around;
+    text-align: center;
+    align-items: baseline;
+    select {
+      width: 50px;
+      height: 25px;
+      border-radius: 7px;
+    }
   }
   .table_toolbar__input {
     position: relative;
@@ -34,8 +40,6 @@
     background-color: white;
   }
 }
-
-
 
 .table__data {
   background-color: white;

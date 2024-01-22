@@ -1,10 +1,23 @@
 <ng-container *ngIf="loading.isLoading$ | async">
   {{ messagePending }}
 </ng-container>
-<div *ngIf="data.length && !(loading.isLoading$ | async)" class="table_content">
-  <div *ngIf="showTool; else noToolbar" class="table_toolbar">
-    <span>Теги: {{ data.length }}</span>
-    <div class="table_toolbar__input">
+<div
+  *ngIf="data.length && !(loading.isLoading$ | async)"
+  class="table_content">
+  <div
+    *ngIf="!isEmptyObject(tableToolbar);
+    else noToolbar"
+    class="table_toolbar">
+    <span
+      *ngIf="tableToolbar.totalDataCount">Теги: {{ data.length }}
+    </span>
+
+    <select *ngIf="tableToolbar.limit" [ngModel]="limit" (ngModelChange)="setPageLimit($event)">
+      <option  *ngFor="let opt of limitOptions" [value]="opt">
+        {{ opt }}
+      </option>
+    </select>
+    <div class="table_toolbar__input" *ngIf="tableToolbar.search">
       <label>Поиск</label>
       <input class="table_data__search" type="text">
     </div>
@@ -16,8 +29,7 @@
     <table class="table__data">
       <thead>
       <tr>
-        <th *ngFor="let col of columns"
-            (click)="sortBy(col.header)"
+        <th *ngFor="let col of columns" (click)="sortBy(col)"
         >
           {{ col.header | titlecase }}
         </th>
