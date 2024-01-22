@@ -1,11 +1,12 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import {ActivatedRoute, Params, Router} from "@angular/router";
 import { TableLibService } from "./table-lib.service";
 import { TableLoadingService } from "./table-loading.service";
 import { AsyncPipe, CommonModule, TitleCasePipe } from "@angular/common";
 import { HttpClientModule } from "@angular/common/http";
 import { FormsModule } from "@angular/forms";
-import { TableToolbar } from "./models";
+import { ColumnPropertiesInterface, TableToolbar } from "./models";
+
 @Component({
   selector: 'lib-table-lib',
   standalone: true,
@@ -22,19 +23,19 @@ import { TableToolbar } from "./models";
 
 export class TableLibComponent implements OnInit {
 
-  @Input() URL!: string
+  @Input() readonly token = 'WriteYourTokenHere';
+  @Input() URL = '';
   @Input() autoLoading = true;
-  @Input() messageNotFound = '';
+  @Input() header = '';
   @Input() messagePending = '';
-  @Input() header: string = '';
-  @Input() columns:  any = []
-  @Input() tableToolbar:TableToolbar = {}
-  public data: any = [];
+  @Input() tableDataNotFound = '';
+  @Input() columns: ColumnPropertiesInterface[] = [];
+  @Input() tableToolbar:TableToolbar = {};
+  public data: any[] = [];
   public currentPage = 1;
   public limit =  20;
-  public  limitOptions = [20, 50, 100]
-
-  private params: any = [];
+  public limitOptions = [20, 50, 100];
+  private params: Params = [];
 
 
   constructor(
@@ -49,16 +50,18 @@ export class TableLibComponent implements OnInit {
       this.params = params
       this.currentPage = isNaN(+params['page']) ? 1 : +params['page'];
       this.limit = isNaN(+params['limit']) ? 20 : +params['limit'];
-      this.loading.setLoading(true);
-      this.tableLibService.getTableData(this.URL, params)
-        .subscribe((data) => {
-          this.loading.setLoading(false);
-          this.data = Object.values(data)[0]
-        })
+      if (this.autoLoading && this.token) {
+        this.loading.setLoading(true);
+        this.tableLibService.getTableData(this.URL, params)
+          .subscribe((data) => {
+            this.loading.setLoading(false);
+            this.data = Object.values(data)[0];
+          });
+      }
     })
   }
 
-  onNavigate(column:  any) {
+  onTriggerEvent(column:  {}): void {
     this.router.navigate([],
       {
         queryParams: {...column, page: this.currentPage},
@@ -66,39 +69,39 @@ export class TableLibComponent implements OnInit {
       })
   }
 
-  public sortBy(column: any) {
-    if (!column.sorting) {
+  public sortBy({ header, sorting }: ColumnPropertiesInterface): void {
+    if (!sorting) {
       return;
     }
     const params = {
-      order_by: column.header,
-      order_type: this.params.order_type === 'desc' ? 'asc' : 'desc'
+      order_by: header,
+      order_type: this.params['order_type'] === 'desc' ? 'asc' : 'desc'
     }
-    this.onNavigate(params);
+    this.onTriggerEvent(params);
   }
 
-  public previousPage() {
+  public setPageLimit(limit: number): void {
+    const params = { limit: limit};
+    this.onTriggerEvent(params);
+  }
+
+  public previousPage(): void {
     if (this.currentPage === 1) {
-      return
+      return;
     }
     this.currentPage--;
-    const params = {page: this.currentPage}
-    this.onNavigate(params)
+    const params = {page: this.currentPage};
+    this.onTriggerEvent(params);
   }
 
-  public nextPage() {
+  public nextPage(): void {
     this.currentPage++;
-    const params = {page: this.currentPage}
-    this.onNavigate(params)
+    const params = {page: this.currentPage};
+    this.onTriggerEvent(params);
   }
 
   public isEmptyObject(obj: {}): boolean {
-    return (obj && (Object.keys(obj).length === 0));
-  }
-
-  public setPageLimit(limit: number) {
-    const params = { limit: limit};
-    this.onNavigate(params)
+    return (obj && (Object.values(obj).includes(true)));
   }
 
 }
